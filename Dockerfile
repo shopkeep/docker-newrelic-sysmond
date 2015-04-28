@@ -23,4 +23,4 @@ CMD         /usr/sbin/nrsysmond-config -c /etc/newrelic/nrsysmond.cfg --set \
                 logfile=$NEW_RELIC_SYSMOND_LOGFILE \
                 ssl=$NEW_RELIC_SYSMOND_SSL \
                 loglevel=$NEW_RELIC_SYSMOND_LOGLEVEL && \
-            /usr/sbin/nrsysmond -c /etc/newrelic/nrsysmond.cfg -f
+            /usr/sbin/nrsysmond -c /etc/newrelic/nrsysmond.cfg -f -n ${NEW_RELIC_SYSMOND_HOST:-$(hostname)}
