@@ -1,10 +1,6 @@
 FROM        debian:wheezy
 
-ENV         NEW_RELIC_SYSMOND_VERSION=2.0.3.113 \
-            NEW_RELIC_LICENSE_KEY= \
-            NEW_RELIC_SYSMOND_SSL=true \
-            NEW_RELIC_SYSMOND_LOGFILE=/dev/stdout \
-            NEW_RELIC_SYSMOND_LOGLEVEL=info
+ENV         NEW_RELIC_SYSMOND_VERSION 2.0.3.113
 
 # apt-get update
 RUN         apt-get update -q && \
@@ -17,10 +13,12 @@ RUN         apt-get update -q && \
             apt-get autoclean -y && \
             rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+ADD         newrelic/nrsysmond.cfg /etc/newrelic/nrsysmond.cfg
+
+ADD         entrypoint.sh /entrypoint.sh
+RUN         chmod +x /entrypoint.sh
+ENTRYPOINT  ["/entrypoint.sh"]
+
 VOLUME      ["/etc/newrelic/"]
-CMD         /usr/sbin/nrsysmond-config -c /etc/newrelic/nrsysmond.cfg --set \
-                license_key=$NEW_RELIC_LICENSE_KEY \
-                logfile=$NEW_RELIC_SYSMOND_LOGFILE \
-                ssl=$NEW_RELIC_SYSMOND_SSL \
-                loglevel=$NEW_RELIC_SYSMOND_LOGLEVEL && \
-            /usr/sbin/nrsysmond -c /etc/newrelic/nrsysmond.cfg -f -n ${NEW_RELIC_SYSMOND_HOST:-$(hostname)}
+
+CMD         ["nrsysmond", "-c", "/etc/newrelic/nrsysmond.cfg", "-f"]
