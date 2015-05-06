@@ -13,6 +13,7 @@ RUN         apt-get update -q && \
             apt-get autoclean -y && \
             rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+ADD         newrelic/nrsysmond-beta /usr/sbin/nrsysmond
 ADD         newrelic/nrsysmond.cfg /etc/newrelic/nrsysmond.cfg
 
 ADD         entrypoint.sh /entrypoint.sh
