@@ -5,7 +5,8 @@ Description=newrelic-docker
 EnvironmentFile=/etc/environment
 ExecStartPre=/bin/sh -c "docker history shopkeep/newrelic-sysmond:beta >/dev/null || docker pull shopkeep/newrelic-sysmond:beta"
 ExecStartPre=/bin/sh -c "docker inspect newrelic-docker >/dev/null && docker rm -f newrelic-docker || true"
-ExecStart=/bin/sh -c "docker run -d -e HOSTNAME=$COREOS_PRIVATE_IPV4 -e NEW_RELIC_LICENSE_KEY=$(/usr/bin/etcdctl get /new_relic/license_key) --name newrelic-docker -v /var/run/docker.sock:/var/run/docker.sock -v /proc:/proc -v /dev:/dev -v /sys:/sys --privileged shopkeep/newrelic-sysmond:beta"
+ExecStart=/bin/sh -c "docker run --rm -e HOSTNAME=$COREOS_PRIVATE_IPV4 -e NEW_RELIC_LICENSE_KEY=$(/usr/bin/etcdctl get /new_relic/license_key) --name newrelic-docker -v /var/run/docker.sock:/var/run/docker.sock -v /proc:/proc -v /dev:/dev -v /sys:/sys --privileged shopkeep/newrelic-sysmond:beta"
+ExecStopPost=-/usr/bin/docker rm -f newrelic-docker
 Restart=on-failure
 RestartSec=5
 
